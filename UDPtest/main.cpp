@@ -43,7 +43,7 @@ void SendToClient(string ClientIP, char buf[2048])
 
 	sockaddr_in server;
 	server.sin_family = AF_INET;
-	server.sin_port = htons(12899); //Send to Clients port
+	server.sin_port = htons(12773); //Send to Clients port
 
 	inet_pton(AF_INET, ClientIP.c_str(), &server.sin_addr);
 	SOCKET out = socket(AF_INET, SOCK_DGRAM, 0);
@@ -70,10 +70,8 @@ void GoThroughClients(char buf[2048])
 		}
 		else
 		{
-			cout << "Else in send to client hits" << endl;
 			SendToClient(ClientIPsList[i], buf);
 		}
-		cout << "went through client[" << i << "] with data: " << ClientIPsList[i] << endl;
 	}
 }
 
@@ -95,7 +93,7 @@ int main()
 	sockaddr_in serverHint;
 	serverHint.sin_addr.S_un.S_addr = ADDR_ANY; // Us any IP address available on the machine
 	serverHint.sin_family = AF_INET; // Address format is IPv4
-	serverHint.sin_port = htons(12898); // catch, Convert from little to big endian.  HOST PORT
+	serverHint.sin_port = htons(12774); // catch, Convert from little to big endian.  HOST PORT
 
 	if (bind(in, (sockaddr*)&serverHint, sizeof(serverHint)) == SOCKET_ERROR) //sockaddress (points to struct? & is like obj.serverHint?)
 	{
@@ -125,7 +123,6 @@ int main()
 		inet_ntop(AF_INET, &client.sin_addr, ClientIP, 256);  //INT family comes from the struct ws2
 		//check if its a new client, intro message
 		char CheckJoinMsg[] = "serverjoin";
-		cout << "comparing buf: " << buf << " type " << typeid(buf).name() << " to CheckJoinMsg: " << CheckJoinMsg << " type " << typeid(buf).name() << endl;
 
 		if (strcmp(buf, CheckJoinMsg) == 0)
 		{
@@ -135,7 +132,6 @@ int main()
 
 		GoThroughClients(buf);
 
-		//renable this
 		cout << "Messaged recieved from: " << ClientIP << " : " << buf << endl;
 	}
 
